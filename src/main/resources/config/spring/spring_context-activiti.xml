@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+
+    <!-- 加载配置属性文件 -->
+    <context:property-placeholder ignore-unresolvable="true" file-encoding="utf-8" location="classpath:/config/jdbc.properties"/>
+    <!-- 流程引擎配置 -->
+    <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+        <!-- 数据库连接池 -->
+        <property name="dataSource" ref="dataSource" />
+        <!-- 事务 -->
+        <property name="transactionManager" ref="transactionManager"/>
+        <!-- 自动部署 -->
+        <!--<property name="deploymentResources" value="classpath*:/act/deployments/**/*.bar"/>-->
+        <!-- 数据库自动升级 -->
+        <property name="databaseSchemaUpdate" value="true" />
+        <!-- 作业执行器 -->
+        <property name="jobExecutorActivate" value="false" />
+        <!-- 历史级别 -->
+        <property name="history" value="full" />
+        <!-- UUID作为主键生成策略 -->
+        <!--<property name="idGenerator" ref="idGen" />-->
+        <!-- (databaseType 不用修改,即使连接其他类型数据库)  act引擎会自动替换成相应的type,这里加上是因为act不识别hsqldb类型,故直接映射成H2-->
+        <property name="databaseType" value="${application.database.type}"/>
+
+        <!-- 生成流程图的字体 -->
+        <property name="activityFontName" value="宋体"/>
+        <property name="labelFontName" value="宋体"/>
+
+    </bean>
+
+    <bean id="processEngineFactory" class="org.activiti.spring.ProcessEngineFactoryBean">
+        <property name="processEngineConfiguration" ref="processEngineConfiguration" />
+    </bean>
+
+    <!--<bean id="processEngine" factory-bean="processEngineFactory" factory-method="getObject" />-->
+    <bean id="repositoryService" factory-bean="processEngineFactory" factory-method="getRepositoryService" />
+    <bean id="runtimeService" factory-bean="processEngineFactory" factory-method="getRuntimeService" />
+    <bean id="formService" factory-bean="processEngineFactory" factory-method="getFormService" />
+    <bean id="identityService" factory-bean="processEngineFactory" factory-method="getIdentityService" />
+    <bean id="taskService" factory-bean="processEngineFactory" factory-method="getTaskService" />
+    <bean id="historyService" factory-bean="processEngineFactory" factory-method="getHistoryService" />
+    <bean id="managementService" factory-bean="processEngineFactory" factory-method="getManagementService" />
+
+
+
+</beans>

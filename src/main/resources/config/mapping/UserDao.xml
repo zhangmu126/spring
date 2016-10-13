@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springmvcdemo.dao.UserDao">
+	
+    <sql id="UserColumns">
+		user_id as userId,
+		user_name as userName,
+		user_pwd as userPwd
+	</sql>
+    
+    <select id="getByUser" resultType="com.springmvcdemo.model.UserVo" parameterType="com.springmvcdemo.model.UserVo">
+		SELECT 
+			<include refid="UserColumns"/>
+		FROM sys_user
+		WHERE user_name = #{userName}
+		and user_pwd =  #{userPwd}
+	</select>
+</mapper>
